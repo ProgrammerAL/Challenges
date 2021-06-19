@@ -33,7 +33,7 @@ namespace FileAndDirectoryBrowserWebApi.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
+        [HttpGet("root")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RootDirectoryResponse))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [SwaggerOperation(
@@ -50,14 +50,15 @@ namespace FileAndDirectoryBrowserWebApi.Controllers
             return Ok(response);
         }
 
-        [HttpGet]
+        [HttpGet("from-path")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(DirectoryResponse))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [SwaggerOperation(
             Summary = "Finds the info for a directory at a given path",
             OperationId = "NavigateController.GetDirectoryInfoAtPath")
         ]
-        public ActionResult<DirectoryResponse> GetDirectoryInfoAtPath(DirectoryInfoRequest infoRequest)
+        public ActionResult<DirectoryResponse> GetDirectoryInfoAtPath([FromQuery] DirectoryInfoRequest infoRequest)
         {
             if (!ModelState.IsValid)
             {

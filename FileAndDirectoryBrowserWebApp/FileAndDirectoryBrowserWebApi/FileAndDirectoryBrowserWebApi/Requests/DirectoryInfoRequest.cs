@@ -11,7 +11,6 @@ namespace FileAndDirectoryBrowserWebApi.Requests
 {
     public class DirectoryInfoRequest
     {
-        [FromQuery]
         [NotNull]
         [Required(AllowEmptyStrings = false)]
         public string? Path { get; set; }

@@ -18,6 +18,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 
 namespace FileAndDirectoryBrowserWebApi
@@ -42,7 +43,8 @@ namespace FileAndDirectoryBrowserWebApi
             });
 
             services.AddOptions<NavigationOptions>()
-                    .ValidateDataAnnotations();
+                .Bind(Configuration.GetSection(nameof(NavigationOptions)))
+                .ValidateDataAnnotations();
 
             services.AddSingleton<IDirectorySearchService, DirectorySearchService>();
 
@@ -57,7 +59,12 @@ namespace FileAndDirectoryBrowserWebApi
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "FileAndDirectoryBrowserWebApi v1"));
+
+                //Hack: Has to be added twice in development for some reason
+                app.UseMiddleware<HttpExceptionResponseMiddleware>();
             }
+
+            app.UseMiddleware<HttpExceptionResponseMiddleware>();
 
             app.UseHttpsRedirection();
 
@@ -70,8 +77,6 @@ namespace FileAndDirectoryBrowserWebApi
                 endpoints.MapControllers();
             });
 
-            app.UseMiddleware<HttpExceptionResponseMiddleware>();
-
             ForceLoadConfigOptions(app);
         }
 
@@ -80,7 +85,7 @@ namespace FileAndDirectoryBrowserWebApi
         /// </summary>
         private void ForceLoadConfigOptions(IApplicationBuilder app)
         {
-            app.ApplicationServices.GetService<NavigationOptions>();
+            app.ApplicationServices.GetService<IOptions<NavigationOptions>>();
         }
     }
 }

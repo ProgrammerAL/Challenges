@@ -30,6 +30,10 @@ namespace FileAndDirectoryBrowserWebApi.Middleware
                 response.StatusCode = (int)httpExceptionBase.StatusCode;
                 await response.WriteAsync(httpExceptionBase.Message);
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
     }
 }

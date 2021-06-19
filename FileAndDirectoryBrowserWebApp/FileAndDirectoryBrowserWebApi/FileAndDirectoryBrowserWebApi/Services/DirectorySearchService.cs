@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -30,16 +31,24 @@ namespace FileAndDirectoryBrowserWebApi.Services
             IOptions<NavigationOptions> navigationOptions)
         {
             _directoryWrapper = directoryWrapper;
+            
             _navigationConfig = navigationOptions.Value;
         }
 
         public DirectoryInfo LoadRootDirectoryInfo()
         {
             var rootPath = _navigationConfig.StartDirectory;
-            return LoadDirectoryInfo(rootPath);
+            return LoadDirectoryInfoAtPath(rootPath);
         }
 
         public DirectoryInfo LoadDirectoryInfo(string path)
+        {
+            var rootPath = _navigationConfig.StartDirectory;
+            var loadPath = Path.Combine(rootPath, path);
+            return LoadDirectoryInfoAtPath(loadPath);
+        }
+
+        private DirectoryInfo LoadDirectoryInfoAtPath(string path)
         {
             EnsureDirectoryExists(path);
 

@@ -23,12 +23,18 @@ namespace FileAndDirectoryBrowserWebApi.Wrappers
 
         public ImmutableArray<string> LoadDirectoriesAtPath(string path)
         {
-            return Directory.GetDirectories(path).ToImmutableArray();
+            var directoryInfo = new DirectoryInfo(path);
+            var directoryNameInfos = directoryInfo.GetDirectories("*", SearchOption.TopDirectoryOnly);
+
+            return directoryNameInfos.Select(x => x.Name).ToImmutableArray();
         }
         
         public ImmutableArray<string> LoadFileNamesAtPath(string path)
         {
-            return Directory.GetFiles(path).ToImmutableArray();
+            var directoryInfo = new DirectoryInfo(path);
+            var filesNameInfos = directoryInfo.GetFiles("*", SearchOption.TopDirectoryOnly);
+
+            return filesNameInfos.Select(x => x.Name).ToImmutableArray();
         }
     }
 }
