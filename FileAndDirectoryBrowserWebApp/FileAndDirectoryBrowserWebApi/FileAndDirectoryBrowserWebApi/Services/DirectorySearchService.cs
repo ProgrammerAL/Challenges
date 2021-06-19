@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 using FileAndDirectoryBrowserWebApi.Exceptions.HttpExceptions;
 using FileAndDirectoryBrowserWebApi.Options;
-using FileAndDirectoryBrowserWebApi.Responses;
 using FileAndDirectoryBrowserWebApi.Wrappers;
 
 using Microsoft.Extensions.Options;
