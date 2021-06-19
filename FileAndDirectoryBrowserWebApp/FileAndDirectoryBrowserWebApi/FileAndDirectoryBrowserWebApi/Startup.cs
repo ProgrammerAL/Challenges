@@ -5,8 +5,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using FileAndDirectoryBrowserWebApi.Middleware;
 using FileAndDirectoryBrowserWebApi.Options;
 using FileAndDirectoryBrowserWebApi.Services;
+using FileAndDirectoryBrowserWebApi.Wrappers;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -43,6 +45,8 @@ namespace FileAndDirectoryBrowserWebApi
                     .ValidateDataAnnotations();
 
             services.AddSingleton<IDirectorySearchService, DirectorySearchService>();
+
+            services.AddSingleton<IDirectoryWrapper, DirectoryWrapper>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -65,6 +69,8 @@ namespace FileAndDirectoryBrowserWebApi
             {
                 endpoints.MapControllers();
             });
+
+            app.UseMiddleware<HttpExceptionResponseMiddleware>();
 
             ForceLoadConfigOptions(app);
         }

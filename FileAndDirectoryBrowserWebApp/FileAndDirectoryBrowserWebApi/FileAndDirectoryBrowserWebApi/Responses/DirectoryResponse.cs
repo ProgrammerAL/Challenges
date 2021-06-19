@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace FileAndDirectoryBrowserWebApi.Responses
 {
-    public record DirectoryResponse(ImmutableArray<string> Directories, ImmutableArray<DirectoryResponse.FileSummaryResponse> Files)
-    { 
-        public record FileSummaryResponse(string FileName);
+    public record DirectoryResponse(
+        ImmutableArray<DirectoryResponse.DirectorySummaryResponse> Directories,
+        ImmutableArray<DirectoryResponse.FileSummaryResponse> Files)
+    {
+        public record DirectorySummaryResponse(string Name);
+        public record FileSummaryResponse(string Name);
     }
 }

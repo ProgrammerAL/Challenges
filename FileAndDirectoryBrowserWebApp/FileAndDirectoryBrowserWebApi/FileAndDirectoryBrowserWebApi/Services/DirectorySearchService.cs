@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
+
+using FileAndDirectoryBrowserWebApi.Exceptions.HttpExceptions;
 using FileAndDirectoryBrowserWebApi.Options;
 using FileAndDirectoryBrowserWebApi.Responses;
 using FileAndDirectoryBrowserWebApi.Wrappers;
@@ -10,9 +13,12 @@ using Microsoft.Extensions.Options;
 
 namespace FileAndDirectoryBrowserWebApi.Services
 {
+    public record DirectoryInfo(ImmutableArray<string> DirectoryNames, ImmutableArray<string> FileNames);
+
     public interface IDirectorySearchService
     {
-        Task<RootDirectoryResponse> LoadRootDirectoryResponseAsync();
+        DirectoryInfo LoadRootDirectoryInfo();
+        DirectoryInfo LoadDirectoryInfo(string path);
     }
 
     public class DirectorySearchService : IDirectorySearchService
@@ -28,8 +34,28 @@ namespace FileAndDirectoryBrowserWebApi.Services
             _navigationConfig = navigationOptions.Value;
         }
 
-        public async Task<RootDirectoryResponse> LoadRootDirectoryResponseAsync()
-        { 
+        public DirectoryInfo LoadRootDirectoryInfo()
+        {
+            var rootPath = _navigationConfig.StartDirectory;
+            return LoadDirectoryInfo(rootPath);
+        }
+
+        public DirectoryInfo LoadDirectoryInfo(string path)
+        {
+            EnsureDirectoryExists(path);
+
+            var directoryNames = _directoryWrapper.LoadDirectoriesAtPath(path);
+            var fileNames = _directoryWrapper.LoadFileNamesAtPath(path);
+
+            return new DirectoryInfo(directoryNames, fileNames);
+        }
+
+        private void EnsureDirectoryExists(string path)
+        {
+            if (!_directoryWrapper.DoesDirectoryExist(path))
+            {
+                throw new NotFoundException($"Directory at path does not exist: {path}");
+            }
         }
     }
 }
