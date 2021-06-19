@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
+using FileAndDirectoryBrowserWebApi.Exceptions.HttpExceptions;
 using FileAndDirectoryBrowserWebApi.Requests;
 using FileAndDirectoryBrowserWebApi.Responses;
 using FileAndDirectoryBrowserWebApi.Services;
@@ -57,6 +59,11 @@ namespace FileAndDirectoryBrowserWebApi.Controllers
         ]
         public ActionResult<DirectoryResponse> GetDirectoryInfoAtPath(DirectoryInfoRequest infoRequest)
         {
+            if (!ModelState.IsValid)
+            {
+                throw new ModelValidationException("Model Invalid");
+            }
+
             var info = _directorySearchService.LoadDirectoryInfo(infoRequest.Path);
             var response = new DirectoryResponse(
                 info.DirectoryNames.Select(x => new DirectoryResponse.DirectorySummaryResponse(Name: x)).ToImmutableArray(),
