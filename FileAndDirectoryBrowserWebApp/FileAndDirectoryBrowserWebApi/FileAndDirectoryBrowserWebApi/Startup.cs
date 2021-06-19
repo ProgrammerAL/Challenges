@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using FileAndDirectoryBrowserWebApi.Options;
+using FileAndDirectoryBrowserWebApi.Services;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -35,6 +38,11 @@ namespace FileAndDirectoryBrowserWebApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "FileAndDirectoryBrowserWebApi", Version = "v1" });
             });
+
+            services.AddOptions<NavigationOptions>()
+                    .ValidateDataAnnotations();
+
+            services.AddSingleton<IDirectorySearchService, DirectorySearchService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,6 +65,16 @@ namespace FileAndDirectoryBrowserWebApi
             {
                 endpoints.MapControllers();
             });
+
+            ForceLoadConfigOptions(app);
+        }
+
+        /// <summary>
+        /// Loads all config options on app startup so validation exceptions happen now instead of mid-way through runtime
+        /// </summary>
+        private void ForceLoadConfigOptions(IApplicationBuilder app)
+        {
+            app.ApplicationServices.GetService<NavigationOptions>();
         }
     }
 }
