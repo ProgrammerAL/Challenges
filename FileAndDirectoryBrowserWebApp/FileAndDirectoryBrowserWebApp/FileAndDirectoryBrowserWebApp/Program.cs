@@ -1,8 +1,12 @@
+#pragma warning disable IDE0058 // Expression value is never used
+
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using FileAndDirectoryBrowserWebApp.Options;
+using FileAndDirectoryBrowserWebApp.ViewModels;
 
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -18,9 +22,17 @@ namespace FileAndDirectoryBrowserWebApp
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddTransient<DirectoryViewModel>();
+
+            builder.Services.AddSingleton<HostOptions>(services =>
+            {
+                var config = services.GetService<IConfiguration>()!;
+                var configSection = config.GetSection(nameof(HostOptions));
+                return new HostOptions(configSection);
+            });
 
             await builder.Build().RunAsync();
         }
     }
 }
+#pragma warning restore IDE0058 // Expression value is never used

@@ -1,7 +1,19 @@
 ﻿@page "/"
+@using System.Diagnostics.CodeAnalysis;
+@using System.Web
 
-<h1>Hello, world!</h1>
+<FileAndDirectoryBrowserWebApp.Components.DirectoryComponent Path="@Path" />
+@code {
+    [Inject, NotNull]
+    protected NavigationManager? NavigationManager { get; set; }
 
-Welcome to your new app.
+    protected string? Path { get; set; }
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+    protected override void OnInitialized()
+    {
+        var queryString = HttpUtility.ParseQueryString(NavigationManager.Uri);
+        Path = queryString["path"];
+
+        base.OnInitialized();
+    }
+}

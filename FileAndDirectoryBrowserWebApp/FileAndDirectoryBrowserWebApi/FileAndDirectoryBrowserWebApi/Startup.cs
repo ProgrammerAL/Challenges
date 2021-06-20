@@ -42,6 +42,15 @@ namespace FileAndDirectoryBrowserWebApi
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "FileAndDirectoryBrowserWebApi", Version = "v1" });
             });
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: "AllowAll",
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin();
+                    });
+            });
+
             services.AddOptions<NavigationOptions>()
                 .Bind(Configuration.GetSection(nameof(NavigationOptions)))
                 .ValidateDataAnnotations();
@@ -69,6 +78,8 @@ namespace FileAndDirectoryBrowserWebApi
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("AllowAll");
 
             app.UseAuthorization();
 
