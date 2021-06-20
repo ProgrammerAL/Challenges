@@ -2,16 +2,19 @@
 @using System.Diagnostics.CodeAnalysis;
 @using System.Web
 
-<FileAndDirectoryBrowserWebApp.Components.DirectoryComponent Path="@Path" />
-@code {
-    [Inject, NotNull]
-    protected NavigationManager? NavigationManager { get; set; }
+@inject NavigationManager NavManager
 
+
+<FileAndDirectoryBrowserWebApp.Components.DirectoryComponent Path="@Path" />
+
+@code {
     protected string? Path { get; set; }
 
     protected override void OnInitialized()
     {
-        var queryString = HttpUtility.ParseQueryString(NavigationManager.Uri);
+        var absoluteUri = NavManager.ToAbsoluteUri(NavManager.Uri);
+        
+        var queryString = HttpUtility.ParseQueryString(absoluteUri.Query);
         Path = queryString["path"];
 
         base.OnInitialized();
