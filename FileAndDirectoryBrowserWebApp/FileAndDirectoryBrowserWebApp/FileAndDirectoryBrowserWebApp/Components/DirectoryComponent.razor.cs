@@ -50,6 +50,18 @@ namespace FileAndDirectoryBrowserWebApp.Components
             UnhookViewModelEvents();
         }
 
+        protected void LoadFromChildDirectory(string childDirectory)
+        {
+            if (!string.IsNullOrWhiteSpace(Path))
+            {
+                Path = System.IO.Path.Combine(Path, childDirectory);
+            }
+            else
+            {
+                Path = childDirectory;
+            }
+        }
+
         private void LoadFromPath()
         {
             ViewModel.LoadAsync(_path).SafeFireAndForget();

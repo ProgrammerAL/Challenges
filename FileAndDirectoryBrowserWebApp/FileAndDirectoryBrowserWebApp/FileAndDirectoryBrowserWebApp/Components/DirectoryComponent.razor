@@ -12,7 +12,8 @@ else
     {
         @foreach (var directoryName in ViewModel.DirectoryNames)
         {
-            <p>@directoryName</p>
+            <button @onclick="@(x => LoadFromChildDirectory(directoryName))">@directoryName</button>
+            <br/>
         }
     }
     else
