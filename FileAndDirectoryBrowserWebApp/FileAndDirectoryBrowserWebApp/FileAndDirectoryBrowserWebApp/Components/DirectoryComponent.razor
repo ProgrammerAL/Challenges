@@ -1,5 +1,39 @@
 ﻿@inherits FileAndDirectoryBrowserWebApp.Components.DirectoryComponentBase
 
-@code {
-
+@if (ViewModel.IsErrored)
+{
+    <div>Received error loading from path: @Path</div>
 }
+else
+{
+    <h2>Directories:</h2>
+
+    if (ViewModel.DirectoryNames.Any())
+    {
+        @foreach (var directoryName in ViewModel.DirectoryNames)
+        {
+            <p>@directoryName</p>
+        }
+    }
+    else
+    {
+        <p>None</p>
+    }
+
+    <br />
+    <br />
+
+    <h2>Files:</h2>
+    if (ViewModel.FileNames.Any())
+    {
+        @foreach (var fileName in ViewModel.FileNames)
+        {
+            <p>@fileName</p>
+        }
+    }
+    else
+    {
+        <p>None</p>
+    }
+}
+
